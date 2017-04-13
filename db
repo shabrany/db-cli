@@ -9,9 +9,11 @@ case "$1" in
 		mysql --login-path=local -e "create database $2"
 		echo "Database $2 successful created!"
 		;;
+	
 	list)
 		mysql --login-path=local -e "show databases"
 		;;
+	
 	drop)
 		if [ -z $2 ]; then
 			echo "Argument databaseName is missing."
@@ -20,6 +22,7 @@ case "$1" in
 		mysql --login-path=local -e "drop database $2"
 		echo "Database $2 dropped"
 		;;
+	
 	tables)
 		if [ -z $2 ]; then
 			echo "Database name is missing. Example: db tables [databaseName]"
@@ -27,16 +30,32 @@ case "$1" in
 		fi
 		mysql --login-path=local -e "use $2; show tables;"
 		;;
+	
 	describe)
 		if [ -z $2 ]; then
-			echo "Argument for database table missing. Example: [database].[table]"
+			echo "Argument for database table missing. Example: db describe [database].[table]"
 			exit 1;
 		fi
 		mysql --login-path=local -e "describe $2"
 		;;
+		
+	query)
+		if [ -z $2 ]; then
+			echo "Argument for database name is missing."
+			exit 1;
+		fi
+
+		if [ -z "$3" ]; then
+			echo "No SQL query given."
+			exit 1;
+		fi
+		mysql --login-path=local -e "use $2; $3"
+		;;
+
 	login)
 		mysql --login-path=local $2
 		;;
+		
 	*)
 		echo "Options: create, list, drop, describe, login"
 		;;
