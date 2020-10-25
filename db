@@ -51,6 +51,22 @@ case "$1" in
 		fi
 		mysql --login-path=local -e "use $2; $3"
 		;;
+	dump)
+		if [ -z $2 ]; then 
+			echo "Please give a database name."
+			exit 1;
+		fi
+
+		if [ -z "$(mysqlshow --login-path=local | grep $2)" ];then
+			echo "Database $2 does not exists"
+			exit 1;
+		fi
+		
+		mysqldump --login-path=local $2 > "dump_$2.sql"
+		echo "Your dump is ready: dump_$2.sql"
+		ls -lh | grep $2
+		;;
+
 
 	login)
 		mysql --login-path=local $2
